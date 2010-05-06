@@ -1,0 +1,7 @@
+[dbaccess]
+db: demo1
+username:admin
+pwd : admin
+host : localhost
+port : 8069
+
