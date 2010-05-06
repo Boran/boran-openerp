@@ -15,10 +15,6 @@
 ##############################################################################
 
 ## Customise these:
-db='demo1'
-username='admin'
-pwd = 'admin'
-
 nr_partners=3000000   # first N customers to process, so 1000 means max 1000 invoices
 #--------------
 
@@ -27,9 +23,19 @@ import datetime
 from datetime import date
 
 print "----------------------------------------"
-sock_common = xmlrpclib.ServerProxy('http://localhost:8069/xmlrpc/common')
+## Read DB settings from the config file
+import ConfigParser, os
+config = ConfigParser.ConfigParser()
+config.read(['openerp.cfg', os.path.expanduser('~/.openerp.cfg')])
+db      =config.get('dbaccess','db')
+username=config.get('dbaccess','username')
+pwd     =config.get('dbaccess','pwd')
+host    =config.get('dbaccess','host')
+port    =config.getint('dbaccess','port')
+
+sock_common = xmlrpclib.ServerProxy('http://%s:%d/xmlrpc/common' % (host, port))
 uid = sock_common.login(db, username, pwd)
-sock = xmlrpclib.ServerProxy('http://localhost:8069/xmlrpc/object')
+sock = xmlrpclib.ServerProxy('http://%s:%d/xmlrpc/object' % (host, port))
 
 
 print "----- Find first " +str(nr_partners) +" partners -----------------------"

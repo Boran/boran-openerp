@@ -11,20 +11,24 @@
 # GNU General Public License
 ##############################################################################
 
-## Customise these:
-db='demo1'
-username='admin'
-pwd = 'admin'
-
 import xmlrpclib
 import datetime
 from datetime import date
 
 print "----------------------------------------"
-sock_common = xmlrpclib.ServerProxy('http://localhost:8069/xmlrpc/common')
-uid = sock_common.login(db, username, pwd)
-sock = xmlrpclib.ServerProxy('http://localhost:8069/xmlrpc/object')
+## Read DB settings from the config file
+import ConfigParser, os
+config = ConfigParser.ConfigParser()
+config.read(['openerp.cfg', os.path.expanduser('~/.openerp.cfg')])
+db      =config.get('dbaccess','db')
+username=config.get('dbaccess','username')
+pwd     =config.get('dbaccess','pwd')
+host    =config.get('dbaccess','host')
+port    =config.getint('dbaccess','port')
 
+sock_common = xmlrpclib.ServerProxy('http://%s:%d/xmlrpc/common' % (host, port))
+uid = sock_common.login(db, username, pwd)
+sock = xmlrpclib.ServerProxy('http://%s:%d/xmlrpc/object' % (host, port))
 
 invoice  = {
     'type': 'out_invoice',
