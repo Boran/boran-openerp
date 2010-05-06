@@ -1,0 +1,4 @@
+title,name,custcode,comment1,comment2,comment3,vat,website
+M.,Joe Soap,soap1,Example cust 1,test2,test3,CH123652,www.joesoap.com
+Mme.,Francine lavoine,fran1,Example cust 2,test2,test3,CH123653,www.francine.com
+M.,Heidi Alp,heidi,Example cust 3,test2,test3,,www.heidi.ch

@@ -1,0 +1,3 @@
+partner_id,title,firstname,lastname,street,city,zip,fax,phone,mobile,email,country_code 
+3,M.,Bill,Lavoine,My Street 4,MyVillage,1800,0486/62.83.54,0486/62.83.55,0486/62.83.56,bill@lavoine.com,CH
+3,Mme.,Janine,Lavoine,My Street 4,MyVillage,1800,0486/62.83.54,0486/62.83.55,0486/62.83.56,janine@lavoine.com,CH
