@@ -1,3 +1,4 @@
+#!/usr/bin/python
 ##############################################################################
 #
 # partner_address.py
@@ -24,20 +25,25 @@ import xmlrpclib
 import csv
 import datetime
 
-db='prod_isp'     # Your DB
-username='admin'
-pwd = 'admin'  # 
-host = 'localhost'
-port = 8069
 
 nr_cols=12   # we expect this number
 #partner_id,title,firstname,lastname,street,city,zip,fax,phone,mobile,email,country_code
 
 
-#uid = 4
-sock_common = xmlrpclib.ServerProxy('http://localhost:8069/xmlrpc/common')
+## Read DB settings from the config file
+import ConfigParser, os
+config = ConfigParser.ConfigParser()
+config.read(['openerp.cfg', os.path.expanduser('~/.openerp.cfg')])
+db      =config.get('dbaccess','db')
+username=config.get('dbaccess','username')
+pwd     =config.get('dbaccess','pwd')
+host    =config.get('dbaccess','host')
+port    =config.getint('dbaccess','port')
+
+sock_common = xmlrpclib.ServerProxy('http://%s:%d/xmlrpc/common' % (host, port))
 uid = sock_common.login(db, username, pwd)
 sock = xmlrpclib.ServerProxy('http://%s:%d/xmlrpc/object' % (host, port))
+
 
 rowcount=0
 reader = csv.reader(file('partner_address.txt').readlines(), delimiter=',')
