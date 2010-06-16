@@ -1,0 +1,45 @@
+import StringIO
+import base64
+from   osv import osv, fields
+import pooler
+import wizard
+import csv
+import pprint
+import pdb
+from tools.translate import _
+import time
+try:
+  import pyExcelerator as xl
+except :
+  print 'pyExcelerator Python modules not installed'
+
+"""
+to walk through the example:
+- the menu entry calls the action action_report which points to a wizard called "report". 
+- the wizard has two state, the default bien "choose", so the view is called with state=choose
+- The Cancel/Create buttons are shown.
+- Pressing Create leads to  creat_report() being called, return values into the name and data field and state changing to "get"
+- Which results in a SaveAs Dialog, the file is downloaded.
+"""
+
+class Report(osv.osv_memory):
+    _name = 'report'
+    _description = "Create Report"
+    _columns = {
+                'data': fields.binary('File', readonly=True),
+                'name': fields.char('Filename', 16, readonly=True),
+                'state': fields.selection( ( ('choose','choose'),   # choose date
+                     ('get','get'),         # get the file
+                   ) ),
+                }
+
+    def create_report(self,cr,uid,ids,context={}):
+	out=base64.encodestring("test")
+	return self.write(cr, uid, ids, {'state':'get', 'data':out, 'name':'test.csv'}, context=context)
+
+    _defaults = {
+                 'state': lambda *a: 'choose',
+                }
+Report()
+
+

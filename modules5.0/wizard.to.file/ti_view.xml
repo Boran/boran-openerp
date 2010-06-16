@@ -1,0 +1,41 @@
+<openerp>
+	<data>
+
+    <!-- EXCEL exports: View, Action, Menu
+                        <group colspan="2">
+                        </group>
+-->
+
+    <record id="view_wizard" model="ir.ui.view">
+      <field name="name">Custom Report</field>
+      <field name="model">report</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+                <form col="3" string="Custom Report">
+                    <group col="3" fill="0" height="2500" states="choose">
+                        <separator string="Report" colspan="2"/>
+                            <button type="object" name="create_report" icon="gtk-go-forward" string="Create Report"/>
+                            <button special="cancel" icon="gtk-cancel" string="Cancel"/>
+                        <field invisible="1" name="state"/>
+                    </group>
+                    <group col="3" fill="0" states="get">
+                        <separator colspan="3" string="Export done, now download the file:"/>
+                        <field name="name" invisible="1" width="100"/>
+                        <field name="data" nolabel="1" readonly="1" width="100" fieldname="name"/>
+                    </group>
+                </form>
+      </field>
+    </record>
+    <record model="ir.actions.act_window" id="action_report">
+      <field name="name">Custom Report</field>
+      <field name="res_model">report</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+    </record>
+    <menuitem name="POP/Linecard/Save Report" id="menu_linecard_4" action="action_report" sequence="40"/>
+
+
+	</data>
+</openerp>
+
