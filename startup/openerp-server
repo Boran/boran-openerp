@@ -1,0 +1,67 @@
+#!/bin/sh
+#
+# Start/stops the Open ERP Server.
+##############################
+
+SERVERPATH="/opt/openerp.bzr/server/bin"
+CONFIGFILE="/etc/openerp.brz-server.cfg" 
+SERVERPATH="/opt/openerp-server-5.0.11/bin"
+CONFIGFILE="/etc/openerp.5011-server.cfg" 
+SERVERPATH="/opt/openerp-server/bin"
+CONFIGFILE="/etc/openerp-server.cfg" 
+
+NAME=openerp-server
+DESC=openerp-server
+DAEMON=${SERVERPATH}/openerp-server.py
+USERNAME="openerp"
+
+PIDDIR=/var/run/$NAME
+mkdir $PIDDIR 2>/dev/null
+chown $USERNAME $PIDDIR
+PIDFILE=$PIDDIR/$NAME.pid
+DAEMON_OPTS="--config=$CONFIGFILE --pidfile=$PIDFILE"
+#DAEMON_OPTS="-c $CONFIGFILE --pidfile=$PIDFILE --assert-exit-level=debug_rpc"
+#DAEMON_OPTS="-c $CONFIGFILE --pidfile=$PIDFILE --log-level=debug_rpc"
+DAEMON_OPTS="-c $CONFIGFILE --pidfile=$PIDFILE "
+
+case "$1" in
+	start)
+                echo -n "Starting $DESC: "
+		cd $SERVERPATH
+
+                # Debugging to console:
+		echo "Debugging: su $USERNAME -c $DAEMON --debug $DAEMON_OPTS" 
+		#su $USERNAME -c "$DAEMON --debug $DAEMON_OPTS" 
+                # Live (run in the background):
+		nohup su $USERNAME -c "$DAEMON $DAEMON_OPTS"  |logger 2>&1 &
+
+		#pidof -sx openerp-server.py >/var/run/openerp-server.pid
+		# the way it should be done..
+                #start-stop-daemon --start --quiet --pidfile /var/run/$NAME.pid \
+                #  --chuid $USERNAME --background --make-pidfile --exec $DAEMON -- $DAEMON_OPTS
+                # Debugging to console:
+                #start-stop-daemon --start         --pidfile /var/run/$NAME.pid \
+                #  --chuid $USERNAME              --make-pidfile --exec $DAEMON -- $DAEMON_OPTS
+		echo "."
+		;;
+	stop)
+                echo -n "Stopping $DESC PID `cat $PIDFILE`: "
+		start-stop-daemon -c $USERNAME --stop --quiet --pidfile  $PIDFILE --oknodo
+     		rm $PIDFILE >/dev/null 2>&1
+                # Be sure:
+                #echo "Running PID: `pgrep -f openerp-server.py`"
+                #echo "Stopping the oldest $DAEMON..."
+		#pkill -fo $DAEMON
+		echo "."
+		;;
+	restart|force-reload)
+		$0 stop
+		sleep 3
+		$0 start
+		;;
+	*)
+		echo "Usage: /etc/init.d/openerp-server.sh	{start|stop|restart}"
+		exit 1
+		;;
+	esac
+exit 0
